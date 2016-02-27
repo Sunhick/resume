@@ -1,0 +1,150 @@
+\documentclass{resume}
+\usepackage{amssymb}
+\usepackage{url}
+
+\usepackage[bottom=0.2in]{geometry}
+
+\renewcommand{\categoryfont}{\sc}
+
+%
+% set the space used for category titles here:
+% use the same value for oddsidemargin and marginparwidth [the latter 
+% 		will be reset to account for marginparsep]
+% 
+
+\setlength{\oddsidemargin}{.5in}
+\setlength{\marginparwidth}{1.2in}
+% 
+% calculate other dimensions [textwidth and evensidemargin] 
+% in function of oddsidemargin and marginparwidth: 
+% would be nicer to put in the class file...
+%
+\addtolength{\marginparwidth}{-\marginparsep}
+\setlength{\evensidemargin}{\oddsidemargin}
+\setlength{\textwidth}{\paperwidth}
+\addtolength{\textwidth}{-2in}
+\addtolength{\textwidth}{-2.5\oddsidemargin}
+\addtolength{\textwidth}{\marginparwidth}
+\addtolength{\textwidth}{\marginparsep}
+%
+%
+\setlength{\topmargin}{-1.0in}
+%
+%
+\renewcommand{\labelcitem}{$\diamond$}
+\renewcommand{\labelitemi}{$\cdot$}
+\newcommand{\first}{$1^{\mbox{\scriptsize st}}$\ }
+\newcommand{\second}{$2^{\mbox{\scriptsize nd}}$\ }
+\newcommand{\third}{$3^{\mbox{\scriptsize rd}}$\ }
+
+\author{~~~~~~Sunil BN}
+% ------ Address --------------------------------------------------------
+
+\address{
+         Graduate Student\\
+         Computer Science Department\\
+         University of Colorado Boulder\\
+         Boulder CO, USA\\
+        }{
+	2995 Glenwood Dr.\\
+	Boulder, CO 80301\\
+	Mobile \\
+	 \mbox{\small\tt sunhick@gmail.com}}
+
+\begin{document}
+\maketitle
+
+% ------- Education ---------------------------------------------------
+
+\begin{category}{Education}
+\citem{University of Colorado Boulder}, Boulder, CO. ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\textit{Aug 2016-Present}
+Masters in Computer Science\\
+GPA: 4.0 of 4.0.\\
+Coursework: Machine learning, Data mining, Operating Systems, Object oriented design \& analysis,\\ Design \& analysis of Algorithms, Network systems, Software engineering.\\
+\citem{Bangalore Institute of Technology}, Bangalore, IN.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\textit{Sept 2007-Jun 2011}
+Bachelors in Computer Science \& Engineering\\
+GPA: 3.67 of 4.00.
+\end{category}
+
+% --------- Research ----------------------------------------------------
+
+\begin{category}{Research Interest}
+\citemnobullet Machine learning, Data mining, Data Analytics, Software development, Image processing.\\
+\end{category}
+
+\begin{category}{Skills}
+\citemnobullet 
+C\#, .NET, TFS, NUnit, NMock 2.0, WPF, WCF, PRISM, COM, Direct3D, Python, Design Patterns, Clearcase, Linux, C, C++11, GDB, Valgrind, PDB, CLI/C++, MSSQL, MongoDB, Enterprise Architect, NodeJS, AngularJS, Java, Javascript, GIT, GTK+, QT, AutoTools, Perl, MATLAB. 
+\end{category}
+
+\begin{category}{Work Experience}
+\citem{Graduate Research Assistant}\\
+University of Colorado, Boulder~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\textit{Dec 2015 - Present}
+\begin{itemize}
+    \item {Development of firmware for YPOD(Arduino Yun and chemical sensors) a low cost air quality monitoring system. Supervisor: Prof. Michael Hannigan}
+    \item {Developing MongoDB backend using AWS for storing the data streamed by Arduino yun over the WiFi module.}
+    \item {Colloboration and integration of YPOD data with OpenAQ, a real-time database that provides programmatic and historical access to air quality data.}\\
+\end{itemize}
+
+\citem{Graduate Teaching Assistant}\\
+University of Colorado, Boulder~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\textit{Aug 2015 - Dec 2015}
+\begin{itemize}
+    \item {Taught Data structures in C++11 to undergraduates. Under supervision of Prof. Rick Osborne.}\\
+\end{itemize}
+
+\citem{Senior Software Engineer}\\
+Siemens Healthcare, Bangalore~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\textit{Jan 2014 - Jul 2015}
+\begin{itemize}
+     \item {Design, development, Unit testing of software components related to medical imaging software - Syngo.Native( Siemens proprietary software platform for imaging)}
+     \item {Design and development of display manager for DICOM image rendering using Direct 3D and WPF.} 
+     \item {Prototyping of data management module for Imaging software.}\\
+\end{itemize}
+
+\citem{Systems Engineer}\\
+Siemens Healthcare, Bangalore~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\textit{Jul 2011 - Jan 2014}
+\begin{itemize}
+    \item {Design, development, unit testing and bug fixing of medical Imaging software.}
+    \item {Exploring and incorporating the new algorithms, strategies to meet the performance(Increase by 5\%) and memory(reduced leak of 100 MB/hr) in the product.}
+    \item {Knowledge management by documenting details of all software components.}
+    \item {Coordinating and Integrating 3rd party software package into sygno.Interventional product.}
+    \item {Providing timely trainings and hands on session to the team to keep up with the latest Microsoft technologies (WPF, WCF, PRISM).}\\
+\end{itemize}
+
+\end{category}
+
+% -------- Projects --------------------------------------------
+\begin{category}{Projects}
+\citem{Betrayal in Online Strategy Game Diplomacy [2015]} Detecting when the betrayal is going to happen in a online strategy game called Diplomacy. Our approach involves using the game state to capture the game contextual information for modelling a classifier.
+\citem{Distributed File Server [2015]} Client/server based application that allows client to store and retrieve files from multiple servers. Support for simultaneous multiple users, authentication and data encryption using AES.
+\citem{Web server [2015]} Implementation of HTTP web server in C++11. Supports handling of multiple clients, HTTP 1.0 and HTTP 1.1, persistent connection(pipelining). Brings up the web server based on the web configuration file.
+\citem{Key logger [2015]} This is a winter break free-time project. The idea is to track the user keystrokes. It's a client server based architecture. Where the client runs in the background without the knowledge of the user, started as a demon at kernel boot time. This client will listen to the keys and send the window name, user id and keystroke to the server.
+\citem{Screen Recorder [2014]} Screen recorder records all screen activity on your computer and create a video file using FFMPEG encoder. It is written in C\#. It let's you save the video in the required format (MP4, AVI, MKV etc.).
+\citem{.NET Memory Profiler [2014]} A custom .NET memory profiler application. It automatically logs the memory consumption for the process/processes which has loaded the module(DLL) of interest in Syngo.Via application. This profiler helped in figuring out the memory leaks and Out of memory exception in the project.
+\citem{Simple OS [2013]} A simple Linux like operating system written in C and Assembly using GRUB boot loader.
+\citem{Voice over GPRS [2010]} Voice over GPRS is a Voice chat application for symbian mobile phones. It consisted of 3 subsystems Voice chat, Voice-mail and Virtual classroom.
+\end{category}
+
+
+
+% -------- Honors and awards --------------------------------------------
+\begin{category}{Honors \& Awards}
+\citem{University of Colorado, Boulder} Boulder, CO
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\textit{Aug 2015}\\
+One time university fellowship from the Department of Computer Science.
+
+\citem{Siemens Healthcare} Bangalore, IN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\textit{Jan 2014}\\
+Award for efforts in identifying the bottlenecks that lead to stability issues in the project.
+
+\citem{Siemens Heatlhcare} Bangalore, IN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\textit{Jan 2013}\\
+Spot award for extra­ordinary efforts towards delivery of project
+
+\citem{Bangalore Institute of technology} Bangalore, IN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\textit{Jan 2008}\\
+Received scholarship for 3 years from HoneyWell.
+
+\citem{High school} Bangalore, IN ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\textit{2004}\\
+Scholarship from Prerana Infosys foundation.
+
+\end{category}
+
+
+\end{document}
