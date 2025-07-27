@@ -9,8 +9,8 @@
 PDF_DIR = cv-pdf
 
 # Source files
-RESUME_SRC = CV/resume
-MODERN_SRC = CV/resume_modern
+RESUME_SRC = cv/resume
+MODERN_SRC = cv/resume_modern
 
 # Output PDF files
 RESUME_PDF = $(PDF_DIR)/resume.pdf
@@ -35,21 +35,21 @@ modern: $(MODERN_PDF)
 pdf: resume modern
 
 # Dependencies
-$(RESUME_PDF): $(RESUME_SRC).tex CV/resume.cls | $(PDF_DIR)
+$(RESUME_PDF): $(RESUME_SRC).tex cv/resume.cls | $(PDF_DIR)
 	@echo "Building resume..."
-	cd CV && pdflatex -output-directory=../$(PDF_DIR) resume.tex
-	cd CV && rm -f ../$(PDF_DIR)/*.aux ../$(PDF_DIR)/*.log ../$(PDF_DIR)/*.out
+	cd cv && pdflatex -output-directory=../$(PDF_DIR) resume.tex
+	cd cv && rm -f ../$(PDF_DIR)/*.aux ../$(PDF_DIR)/*.log ../$(PDF_DIR)/*.out
 	@if grep -q 'There were undefined references' $(PDF_DIR)/resume.log 2>/dev/null; then \
-		cd CV && bibtex ../$(PDF_DIR)/resume && pdflatex -output-directory=../$(PDF_DIR) resume.tex; \
+		cd cv && bibtex ../$(PDF_DIR)/resume && pdflatex -output-directory=../$(PDF_DIR) resume.tex; \
 	fi
 	@if grep -q 'Rerun' $(PDF_DIR)/resume.log 2>/dev/null; then \
-		cd CV && pdflatex -output-directory=../$(PDF_DIR) resume.tex; \
+		cd cv && pdflatex -output-directory=../$(PDF_DIR) resume.tex; \
 	fi
 	@if grep -q 'Rerun' $(PDF_DIR)/resume.log 2>/dev/null; then \
-		cd CV && pdflatex -output-directory=../$(PDF_DIR) resume.tex; \
+		cd cv && pdflatex -output-directory=../$(PDF_DIR) resume.tex; \
 	fi
 
-$(MODERN_PDF): $(MODERN_SRC).tex CV/resume.cls | $(PDF_DIR)
+$(MODERN_PDF): $(MODERN_SRC).tex cv/resume.cls | $(PDF_DIR)
 	@echo "Building modern resume..."
 	cd CV && pdflatex -output-directory=../$(PDF_DIR) resume_modern.tex
 	cd CV && rm -f ../$(PDF_DIR)/*.aux ../$(PDF_DIR)/*.log ../$(PDF_DIR)/*.out
