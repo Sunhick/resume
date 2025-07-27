@@ -47,6 +47,19 @@ make watch-resume
 make watch-modern
 ```
 
+### Customization
+
+```bash
+# Configure page background color
+make resume PAGE_COLOR=white                    # Pure white background
+make pdf PAGE_COLOR='white!98!black'           # Very light off-white (quoted)
+make modern PAGE_COLOR='white!90!yellow'       # Cream background (quoted)
+make resume PAGE_COLOR=gray!10                 # Light gray background
+
+# Default page color is white!95!black (subtle off-white)
+# Note: Use quotes around colors containing ! to avoid bash history expansion
+```
+
 ### Cleanup
 
 ```bash

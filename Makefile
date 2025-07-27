@@ -16,6 +16,9 @@ MODERN_SRC = cv/resume_modern
 RESUME_PDF = $(PDF_DIR)/resume.pdf
 MODERN_PDF = $(PDF_DIR)/resume_modern.pdf
 
+# Page color configuration (can be overridden)
+PAGE_COLOR ?= white!95!black
+
 # Default build target
 default: resume
 
@@ -36,31 +39,53 @@ pdf: resume modern
 
 # Dependencies
 $(RESUME_PDF): $(RESUME_SRC).tex cv/resume.cls | $(PDF_DIR)
-	@echo "Building resume..."
-	cd cv && pdflatex -output-directory=../$(PDF_DIR) resume.tex
-	cd cv && rm -f ../$(PDF_DIR)/*.aux ../$(PDF_DIR)/*.log ../$(PDF_DIR)/*.out
-	@if grep -q 'There were undefined references' $(PDF_DIR)/resume.log 2>/dev/null; then \
-		cd cv && bibtex ../$(PDF_DIR)/resume && pdflatex -output-directory=../$(PDF_DIR) resume.tex; \
+	@echo "Building resume with page color: $(PAGE_COLOR)..."
+	@sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' cv/resume.tex > cv/resume_temp.tex
+	cd cv && pdflatex -output-directory=../$(PDF_DIR) resume_temp.tex
+	cd cv && mv ../$(PDF_DIR)/resume_temp.pdf ../$(PDF_DIR)/resume.pdf
+	cd cv && rm -f resume_temp.tex ../$(PDF_DIR)/*.aux ../$(PDF_DIR)/*.log ../$(PDF_DIR)/*.out
+	@if grep -q 'There were undefined references' $(PDF_DIR)/resume_temp.log 2>/dev/null; then \
+		@sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' cv/resume.tex > cv/resume_temp.tex; \
+		cd cv && bibtex ../$(PDF_DIR)/resume_temp && pdflatex -output-directory=../$(PDF_DIR) resume_temp.tex; \
+		cd cv && mv ../$(PDF_DIR)/resume_temp.pdf ../$(PDF_DIR)/resume.pdf; \
+		cd cv && rm -f resume_temp.tex; \
 	fi
-	@if grep -q 'Rerun' $(PDF_DIR)/resume.log 2>/dev/null; then \
-		cd cv && pdflatex -output-directory=../$(PDF_DIR) resume.tex; \
+	@if grep -q 'Rerun' $(PDF_DIR)/resume_temp.log 2>/dev/null; then \
+		@sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' cv/resume.tex > cv/resume_temp.tex; \
+		cd cv && pdflatex -output-directory=../$(PDF_DIR) resume_temp.tex; \
+		cd cv && mv ../$(PDF_DIR)/resume_temp.pdf ../$(PDF_DIR)/resume.pdf; \
+		cd cv && rm -f resume_temp.tex; \
 	fi
-	@if grep -q 'Rerun' $(PDF_DIR)/resume.log 2>/dev/null; then \
-		cd cv && pdflatex -output-directory=../$(PDF_DIR) resume.tex; \
+	@if grep -q 'Rerun' $(PDF_DIR)/resume_temp.log 2>/dev/null; then \
+		@sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' cv/resume.tex > cv/resume_temp.tex; \
+		cd cv && pdflatex -output-directory=../$(PDF_DIR) resume_temp.tex; \
+		cd cv && mv ../$(PDF_DIR)/resume_temp.pdf ../$(PDF_DIR)/resume.pdf; \
+		cd cv && rm -f resume_temp.tex; \
 	fi
 
 $(MODERN_PDF): $(MODERN_SRC).tex cv/resume.cls | $(PDF_DIR)
-	@echo "Building modern resume..."
-	cd cv && pdflatex -output-directory=../$(PDF_DIR) resume_modern.tex
-	cd cv && rm -f ../$(PDF_DIR)/*.aux ../$(PDF_DIR)/*.log ../$(PDF_DIR)/*.out
-	@if grep -q 'There were undefined references' $(PDF_DIR)/resume_modern.log 2>/dev/null; then \
-		cd cv && bibtex ../$(PDF_DIR)/resume_modern && pdflatex -output-directory=../$(PDF_DIR) resume_modern.tex; \
+	@echo "Building modern resume with page color: $(PAGE_COLOR)..."
+	@sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' cv/resume_modern.tex > cv/resume_modern_temp.tex
+	cd cv && pdflatex -output-directory=../$(PDF_DIR) resume_modern_temp.tex
+	cd cv && mv ../$(PDF_DIR)/resume_modern_temp.pdf ../$(PDF_DIR)/resume_modern.pdf
+	cd cv && rm -f resume_modern_temp.tex ../$(PDF_DIR)/*.aux ../$(PDF_DIR)/*.log ../$(PDF_DIR)/*.out
+	@if grep -q 'There were undefined references' $(PDF_DIR)/resume_modern_temp.log 2>/dev/null; then \
+		@sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' cv/resume_modern.tex > cv/resume_modern_temp.tex; \
+		cd cv && bibtex ../$(PDF_DIR)/resume_modern_temp && pdflatex -output-directory=../$(PDF_DIR) resume_modern_temp.tex; \
+		cd cv && mv ../$(PDF_DIR)/resume_modern_temp.pdf ../$(PDF_DIR)/resume_modern.pdf; \
+		cd cv && rm -f resume_modern_temp.tex; \
 	fi
-	@if grep -q 'Rerun' $(PDF_DIR)/resume_modern.log 2>/dev/null; then \
-		cd cv && pdflatex -output-directory=../$(PDF_DIR) resume_modern.tex; \
+	@if grep -q 'Rerun' $(PDF_DIR)/resume_modern_temp.log 2>/dev/null; then \
+		@sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' cv/resume_modern.tex > cv/resume_modern_temp.tex; \
+		cd cv && pdflatex -output-directory=../$(PDF_DIR) resume_modern_temp.tex; \
+		cd cv && mv ../$(PDF_DIR)/resume_modern_temp.pdf ../$(PDF_DIR)/resume_modern.pdf; \
+		cd cv && rm -f resume_modern_temp.tex; \
 	fi
-	@if grep -q 'Rerun' $(PDF_DIR)/resume_modern.log 2>/dev/null; then \
-		cd cv && pdflatex -output-directory=../$(PDF_DIR) resume_modern.tex; \
+	@if grep -q 'Rerun' $(PDF_DIR)/resume_modern_temp.log 2>/dev/null; then \
+		@sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' cv/resume_modern.tex > cv/resume_modern_temp.tex; \
+		cd cv && pdflatex -output-directory=../$(PDF_DIR) resume_modern_temp.tex; \
+		cd cv && mv ../$(PDF_DIR)/resume_modern_temp.pdf ../$(PDF_DIR)/resume_modern.pdf; \
+		cd cv && rm -f resume_modern_temp.tex; \
 	fi
 
 # Note: .tex.pdf rule removed - using explicit rules above for better control
@@ -142,5 +167,14 @@ help:
 	@echo "  clobber     - Remove auxiliary files from $(PDF_DIR)/ (preserves PDFs)"
 	@echo "  clean-pdfs  - Remove PDF files from $(PDF_DIR)/ (use with caution)"
 	@echo "  help        - Show this help message"
+	@echo ""
+	@echo "Configuration:"
+	@echo "  PAGE_COLOR  - Set page background color (default: $(PAGE_COLOR))"
+	@echo ""
+	@echo "Examples:"
+	@echo "  make resume PAGE_COLOR=white                    # Pure white background"
+	@echo "  make pdf PAGE_COLOR='white!98!black'           # Very light off-white (quoted)"
+	@echo "  make modern PAGE_COLOR='white!90!yellow'       # Cream background (quoted)"
+	@echo "  make resume PAGE_COLOR=gray!10                 # Light gray background"
 	@echo ""
 	@echo "PDFs are generated in: $(PDF_DIR)/"
