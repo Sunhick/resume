@@ -1,6 +1,8 @@
 # LaTeX Resume Build System
 
-This repository contains LaTeX resume templates with an automated build system using Make.
+![Build Status](https://github.com/sunhick/resume/workflows/Build%20Resume%20PDFs/badge.svg)
+
+This repository contains LaTeX resume templates with an automated build system using Make and GitHub Actions CI/CD.
 
 ## Files
 
@@ -105,3 +107,31 @@ Generated PDFs are saved in the `cv-pdf/` directory:
 The `cv-pdf/` directory is automatically created during build and the generated PDFs are tracked in git.
 
 Both resumes use reduced left margins for better space utilization.
+
+## Automated Builds
+
+This repository uses GitHub Actions to automatically build resume PDFs on every push and pull request. The CI/CD pipeline:
+
+- **Builds multiple configurations**: Tests default off-white, pure white, and cream page backgrounds
+- **Generates artifacts**: Downloadable PDF files available from the Actions tab
+- **Validates compilation**: Ensures LaTeX code compiles correctly across different configurations
+- **Provides quick feedback**: Build status visible in pull requests and commits
+
+### Downloading Built PDFs
+
+1. Go to the [Actions tab](../../actions) in this repository
+2. Click on the latest successful workflow run
+3. Download artifacts:
+   - `resume-pdfs-default` - Default off-white background
+   - `resume-pdfs-white` - Pure white background
+   - `resume-pdfs-cream` - Cream background
+
+### Manual Builds
+
+You can trigger manual builds with custom page colors:
+
+1. Go to the [Actions tab](../../actions)
+2. Click "Build Resume PDFs" workflow
+3. Click "Run workflow"
+4. Enter a custom page color (e.g., `white!98!black`, `gray!5`)
+5. Click "Run workflow" to start the build

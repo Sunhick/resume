@@ -1,0 +1,139 @@
+name: Build Resume PDFs
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      page_color:
+        description: 'Page background color (e.g., white, white!95!black, white!90!yellow)'
+        required: false
+        default: 'white!95!black'
+        type: string
+
+jobs:
+  build-resumes:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        page-color:
+          - name: "default"
+            value: "white!95!black"
+          - name: "white"
+            value: "white"
+          - name: "cream"
+            value: "white!90!yellow"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Cache LaTeX packages
+        uses: actions/cache@v4
+        with:
+          path: /tmp/texlive
+          key: texlive-${{ runner.os }}-${{ hashFiles('cv/*.tex', 'cv/*.cls') }}
+          restore-keys: |
+            texlive-${{ runner.os }}-
+
+      - name: Setup LaTeX environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra texlive-xetex
+          echo "LaTeX packages installed successfully"
+
+      - name: Verify LaTeX installation
+        run: |
+          pdflatex --version
+          which pdflatex
+
+      - name: Display build configuration
+        run: |
+          echo "Building resumes with page color: ${{ matrix.page-color.value }}"
+          echo "Configuration name: ${{ matrix.page-color.name }}"
+
+      - name: Clean previous builds
+        run: |
+          make clean || true
+          rm -rf cv-pdf/ || true
+
+      - name: Build resumes with make
+        run: |
+          make pdf PAGE_COLOR='${{ matrix.page-color.value }}'
+
+      - name: Verify PDF generation
+        run: |
+          ls -la cv-pdf/
+          if [ ! -f "cv-pdf/resume.pdf" ]; then
+            echo "Error: resume.pdf was not generated"
+            exit 1
+          fi
+          if [ ! -f "cv-pdf/resume_modern.pdf" ]; then
+            echo "Error: resume_modern.pdf was not generated"
+            exit 1
+          fi
+          echo "PDF file sizes:"
+          du -h cv-pdf/*.pdf
+
+      - name: Upload PDF artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: resume-pdfs-${{ matrix.page-color.name }}
+          path: cv-pdf/
+          retention-days: 90
+          if-no-files-found: error
+
+  # Handle manual workflow dispatch with custom color
+  build-custom:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.page_color != ''
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Cache LaTeX packages
+        uses: actions/cache@v4
+        with:
+          path: /tmp/texlive
+          key: texlive-${{ runner.os }}-${{ hashFiles('cv/*.tex', 'cv/*.cls') }}
+          restore-keys: |
+            texlive-${{ runner.os }}-
+
+      - name: Setup LaTeX environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra texlive-xetex
+          echo "LaTeX packages installed successfully"
+
+      - name: Clean previous builds
+        run: |
+          make clean || true
+          rm -rf cv-pdf/ || true
+
+      - name: Build resumes with custom color
+        run: |
+          echo "Building resumes with custom page color: ${{ github.event.inputs.page_color }}"
+          make pdf PAGE_COLOR='${{ github.event.inputs.page_color }}'
+
+      - name: Verify PDF generation
+        run: |
+          ls -la cv-pdf/
+          if [ ! -f "cv-pdf/resume.pdf" ] || [ ! -f "cv-pdf/resume_modern.pdf" ]; then
+            echo "Error: PDF files were not generated"
+            exit 1
+          fi
+          echo "PDF file sizes:"
+          du -h cv-pdf/*.pdf
+
+      - name: Upload custom PDF artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: resume-pdfs-custom
+          path: cv-pdf/
+          retention-days: 90
+          if-no-files-found: error

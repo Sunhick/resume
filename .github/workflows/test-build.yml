@@ -1,0 +1,45 @@
+name: Test Build (Local)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-local-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup LaTeX environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra texlive-xetex
+          echo "LaTeX packages installed successfully"
+
+      - name: Verify LaTeX installation
+        run: |
+          pdflatex --version
+          which pdflatex
+
+      - name: Test build with default color
+        run: |
+          echo "Testing build with default page color..."
+          make resume
+          ls -la cv-pdf/
+
+      - name: Test build with white background
+        run: |
+          echo "Testing build with white background..."
+          make clean
+          make resume PAGE_COLOR=white
+          ls -la cv-pdf/
+
+      - name: Verify PDFs were generated
+        run: |
+          if [ ! -f "cv-pdf/resume.pdf" ]; then
+            echo "Error: resume.pdf was not generated"
+            exit 1
+          fi
+          echo "Build test successful!"
+          du -h cv-pdf/*.pdf
