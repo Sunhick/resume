@@ -8,6 +8,7 @@ This repository contains LaTeX resume templates with an automated build system u
 - `CV/resume_modern.tex` - Modern resume format with cleaner styling
 - `CV/resume.cls` - Shared LaTeX class file for both formats
 - `Makefile` - Build automation
+- `cv-pdf/` - Generated PDF output directory (auto-created, git-ignored)
 
 ## Usage
 
@@ -52,8 +53,11 @@ make watch-modern
 # Remove auxiliary files (.aux, .log, etc.)
 make clean
 
-# Remove all generated files including PDFs
+# Remove auxiliary files from cv-pdf/ (preserves PDFs and directory)
 make clobber
+
+# Remove PDF files from cv-pdf/ (use with caution)
+make clean-pdfs
 ```
 
 ### Help
@@ -81,8 +85,10 @@ Generated PDFs are currently tracked in git, but you can exclude them by uncomme
 
 ## Output
 
-Generated PDFs will be saved as:
-- `CV/resume.pdf` - Original format
-- `CV/resume_modern.pdf` - Modern format
+Generated PDFs are saved in the `cv-pdf/` directory:
+- `cv-pdf/resume.pdf` - Original format
+- `cv-pdf/resume_modern.pdf` - Modern format
+
+The `cv-pdf/` directory is automatically created during build and the generated PDFs are tracked in git.
 
 Both resumes use reduced left margins for better space utilization.

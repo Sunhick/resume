@@ -3,59 +3,85 @@
 
 .SUFFIXES: .tex .pdf
 
-.PHONY: default pdf modern resume open-resume open-modern clean clobber help
+.PHONY: default pdf modern resume open-resume open-modern clean clobber clean-pdfs help
 
-# Default targets
-RESUME = CV/resume
-MODERN = CV/resume_modern
+# Output directory for PDFs
+PDF_DIR = cv-pdf
+
+# Source files
+RESUME_SRC = CV/resume
+MODERN_SRC = CV/resume_modern
+
+# Output PDF files
+RESUME_PDF = $(PDF_DIR)/resume.pdf
+MODERN_PDF = $(PDF_DIR)/resume_modern.pdf
 
 # Default build target
 default: resume
 
+# Create output directory
+$(PDF_DIR):
+	@mkdir -p $(PDF_DIR)
+
 # Build original resume
-resume: $(RESUME).pdf
-	@echo "Resume built successfully! Check $(RESUME).pdf"
+resume: $(RESUME_PDF)
+	@echo "Resume built successfully! Check $(RESUME_PDF)"
 
 # Build modern resume
-modern: $(MODERN).pdf
-	@echo "Modern resume built successfully! Check $(MODERN).pdf"
+modern: $(MODERN_PDF)
+	@echo "Modern resume built successfully! Check $(MODERN_PDF)"
 
 # Build both resumes
 pdf: resume modern
 
 # Dependencies
-$(RESUME).pdf: $(RESUME).tex CV/resume.cls
-$(MODERN).pdf: $(MODERN).tex CV/resume.cls
+$(RESUME_PDF): $(RESUME_SRC).tex CV/resume.cls | $(PDF_DIR)
+	@echo "Building resume..."
+	cd CV && pdflatex -output-directory=../$(PDF_DIR) resume.tex
+	cd CV && rm -f ../$(PDF_DIR)/*.aux ../$(PDF_DIR)/*.log ../$(PDF_DIR)/*.out
+	@if grep -q 'There were undefined references' $(PDF_DIR)/resume.log 2>/dev/null; then \
+		cd CV && bibtex ../$(PDF_DIR)/resume && pdflatex -output-directory=../$(PDF_DIR) resume.tex; \
+	fi
+	@if grep -q 'Rerun' $(PDF_DIR)/resume.log 2>/dev/null; then \
+		cd CV && pdflatex -output-directory=../$(PDF_DIR) resume.tex; \
+	fi
+	@if grep -q 'Rerun' $(PDF_DIR)/resume.log 2>/dev/null; then \
+		cd CV && pdflatex -output-directory=../$(PDF_DIR) resume.tex; \
+	fi
 
-# Build rule for LaTeX files
-.tex.pdf:
-	@echo "Building $*..."
-	cd $(dir $*) && pdflatex $(notdir $*)
-	cd $(dir $*) && rm -f *.aux *.log *.out
-	grep 'There were undefined references' $*.log > /dev/null 2>&1 && \
-	   (cd $(dir $*) && bibtex $(notdir $*) && pdflatex $(notdir $*)) || true
-	grep Rerun $*.log > /dev/null 2>&1 && \
-	   (cd $(dir $*) && pdflatex $(notdir $*)) || true
-	grep Rerun $*.log > /dev/null 2>&1 && \
-	   (cd $(dir $*) && pdflatex $(notdir $*)) || true
+$(MODERN_PDF): $(MODERN_SRC).tex CV/resume.cls | $(PDF_DIR)
+	@echo "Building modern resume..."
+	cd CV && pdflatex -output-directory=../$(PDF_DIR) resume_modern.tex
+	cd CV && rm -f ../$(PDF_DIR)/*.aux ../$(PDF_DIR)/*.log ../$(PDF_DIR)/*.out
+	@if grep -q 'There were undefined references' $(PDF_DIR)/resume_modern.log 2>/dev/null; then \
+		cd CV && bibtex ../$(PDF_DIR)/resume_modern && pdflatex -output-directory=../$(PDF_DIR) resume_modern.tex; \
+	fi
+	@if grep -q 'Rerun' $(PDF_DIR)/resume_modern.log 2>/dev/null; then \
+		cd CV && pdflatex -output-directory=../$(PDF_DIR) resume_modern.tex; \
+	fi
+	@if grep -q 'Rerun' $(PDF_DIR)/resume_modern.log 2>/dev/null; then \
+		cd CV && pdflatex -output-directory=../$(PDF_DIR) resume_modern.tex; \
+	fi
+
+# Note: .tex.pdf rule removed - using explicit rules above for better control
 
 # Open PDFs with default viewer (macOS)
-open-resume: $(RESUME).pdf
-	@echo "Opening $(RESUME).pdf..."
-	@command -v open >/dev/null 2>&1 && open $(RESUME).pdf || echo "open command not available"
+open-resume: $(RESUME_PDF)
+	@echo "Opening $(RESUME_PDF)..."
+	@command -v open >/dev/null 2>&1 && open $(RESUME_PDF) || echo "open command not available"
 
-open-modern: $(MODERN).pdf
-	@echo "Opening $(MODERN).pdf..."
-	@command -v open >/dev/null 2>&1 && open $(MODERN).pdf || echo "open command not available"
+open-modern: $(MODERN_PDF)
+	@echo "Opening $(MODERN_PDF)..."
+	@command -v open >/dev/null 2>&1 && open $(MODERN_PDF) || echo "open command not available"
 
 # Legacy xpdf support
 xpdf: resume
-	@command -v xpdf >/dev/null 2>&1 && xpdf -z page $(RESUME).pdf & || echo "xpdf not available, use 'make open-resume' instead"
+	@command -v xpdf >/dev/null 2>&1 && xpdf -z page $(RESUME_PDF) & || echo "xpdf not available, use 'make open-resume' instead"
 
 # Watch and rebuild (requires ruby)
 watch-resume:
-	@echo "Watching $(RESUME).tex for changes..."
-	@ruby -e "file = '$(RESUME).tex'" \
+	@echo "Watching $(RESUME_SRC).tex for changes..."
+	@ruby -e "file = '$(RESUME_SRC).tex'" \
 	      -e "command = '$(MAKE) resume'" \
 	      -e "lm = File.mtime file" \
 	      -e "while true do" \
@@ -66,8 +92,8 @@ watch-resume:
 	      -e "end"
 
 watch-modern:
-	@echo "Watching $(MODERN).tex for changes..."
-	@ruby -e "file = '$(MODERN).tex'" \
+	@echo "Watching $(MODERN_SRC).tex for changes..."
+	@ruby -e "file = '$(MODERN_SRC).tex'" \
 	      -e "command = '$(MAKE) modern'" \
 	      -e "lm = File.mtime file" \
 	      -e "while true do" \
@@ -82,10 +108,25 @@ clean:
 	@echo "Cleaning auxiliary files..."
 	cd CV && rm -f *.aux *.bbl *.blg *.log *.toc *.dvi *.ind *.ilg *.nls *.nlo *.out
 
-# Remove all generated files including PDFs
+# Remove auxiliary files from PDF directory (preserves PDFs)
 clobber: clean
-	@echo "Removing all generated files..."
-	rm -f $(RESUME).pdf $(MODERN).pdf
+	@echo "Cleaning auxiliary files from $(PDF_DIR)/..."
+	@if [ -d "$(PDF_DIR)" ]; then \
+		rm -f $(PDF_DIR)/*.aux $(PDF_DIR)/*.log $(PDF_DIR)/*.out $(PDF_DIR)/*.bbl $(PDF_DIR)/*.blg; \
+		echo "Cleaned auxiliary files from $(PDF_DIR)/ (PDFs preserved)"; \
+	else \
+		echo "$(PDF_DIR)/ directory does not exist"; \
+	fi
+
+# Remove PDFs (use with caution)
+clean-pdfs:
+	@echo "Removing PDF files from $(PDF_DIR)/..."
+	@if [ -d "$(PDF_DIR)" ]; then \
+		rm -f $(PDF_DIR)/*.pdf; \
+		echo "Removed PDF files from $(PDF_DIR)/"; \
+	else \
+		echo "$(PDF_DIR)/ directory does not exist"; \
+	fi
 
 # Help target
 help:
@@ -98,5 +139,8 @@ help:
 	@echo "  watch-resume- Watch and rebuild original resume"
 	@echo "  watch-modern- Watch and rebuild modern resume"
 	@echo "  clean       - Remove auxiliary files"
-	@echo "  clobber     - Remove all generated files"
+	@echo "  clobber     - Remove auxiliary files from $(PDF_DIR)/ (preserves PDFs)"
+	@echo "  clean-pdfs  - Remove PDF files from $(PDF_DIR)/ (use with caution)"
 	@echo "  help        - Show this help message"
+	@echo ""
+	@echo "PDFs are generated in: $(PDF_DIR)/"
