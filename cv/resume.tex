@@ -7,7 +7,7 @@
     pdfborder={0 0 0},
 }
 
-\usepackage[bottom=0.2in]{geometry}
+\usepackage[left=0.4in,right=0.4in,top=0.6in,bottom=0.2in]{geometry}
 
 \renewcommand{\categoryfont}{\sc}
 
@@ -17,20 +17,16 @@
 % 		will be reset to account for marginparsep]
 %
 
-\setlength{\oddsidemargin}{.25in}
-\setlength{\marginparwidth}{1.2in}
-%
-% calculate other dimensions [textwidth and evensidemargin]
-% in function of oddsidemargin and marginparwidth:
-% would be nicer to put in the class file...
-%
-\addtolength{\marginparwidth}{-\marginparsep}
-\setlength{\evensidemargin}{\oddsidemargin}
-\setlength{\textwidth}{\paperwidth}
-\addtolength{\textwidth}{-2in}
-\addtolength{\textwidth}{-2.5\oddsidemargin}
-\addtolength{\textwidth}{\marginparwidth}
-\addtolength{\textwidth}{\marginparsep}
+% Manual margin calculations commented out - using geometry package instead
+% \setlength{\oddsidemargin}{.1in}
+% \setlength{\marginparwidth}{1.2in}
+% \addtolength{\marginparwidth}{-\marginparsep}
+% \setlength{\evensidemargin}{\oddsidemargin}
+% \setlength{\textwidth}{\paperwidth}
+% \addtolength{\textwidth}{-2in}
+% \addtolength{\textwidth}{-2.5\oddsidemargin}
+% \addtolength{\textwidth}{\marginparwidth}
+% \addtolength{\textwidth}{\marginparsep}
 %
 %
 \setlength{\topmargin}{-1.0in}
