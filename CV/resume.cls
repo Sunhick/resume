@@ -77,7 +77,7 @@
   \smallskip
   \hrule
   \smallskip
-  \begin{list}{}{\leftmargin=1.5em \rightmargin=0em \itemsep=0.5em}
+  \begin{list}{}{\leftmargin=0.75em \rightmargin=0em \itemsep=0.5em}
 }{
   \end{list}
   \medskip
@@ -102,6 +102,36 @@
 
 % Allow redefinition of label commands
 \newcommand{\labelcitem}{$\diamond$}
+
+%----------------------------------------------------------------------------------------
+%	MODERN RESUME ENVIRONMENTS (rSection and rSubsection)
+%----------------------------------------------------------------------------------------
+
+% rSection environment for modern resume format
+\newenvironment{rSection}[1]{
+  \medskip
+  \MakeUppercase{\bf #1}
+  \medskip
+  \hrule
+  \begin{list}{}{\leftmargin=0.75em}
+  \item[]
+}{
+  \end{list}
+}
+
+% rSubsection environment for work experience
+\newenvironment{rSubsection}[4]{
+ {\bf #1} \hfill {#2}
+ \ifthenelse{\equal{#3}{}}{}{
+  \\
+  {\em #3} \hfill {\em #4}
+  }\smallskip
+  \begin{list}{$\cdot$}{\leftmargin=0em}
+   \itemsep -0.5em \vspace{-0.5em}
+  }{
+  \end{list}
+  \vspace{0.5em}
+}
 
 %----------------------------------------------------------------------------------------
 %	ORDINAL COMMANDS (defined in resume.tex)
