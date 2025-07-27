@@ -5,7 +5,7 @@
 
 .PHONEY : default pdf xpdf wpdf clean clobber
 
-REPORT = sunil_resume
+REPORT = CV/resume
 SHOW = $(REPORT)
 
 $(REPORT).pdf: $(REPORT).tex
