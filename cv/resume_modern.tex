@@ -1,7 +1,7 @@
 \documentclass{resume}
 \usepackage[left=0.5in,top=0.6in,right=0.75in,bottom=0.6in]{geometry}
 \usepackage{xcolor}
-\pagecolor{PAGECOLOR_PLACEHOLDER}
+\pagecolor{white}
 \usepackage{amssymb}
 \usepackage{url}
 \usepackage{hyperref}
@@ -17,133 +17,16 @@
 
 \maketitle
 
-%----------------------------------------------------------------------------------------
-%	EDUCATION SECTION
-%----------------------------------------------------------------------------------------
+\input{sections/education}
 
-\begin{rSection}{Education}
+\input{sections/technical_skills}
 
-{\bf University of Colorado Boulder} \hfill {\em Aug 2015 - Present}
-\\ Master of Science in Computer Science \hfill {\em GPA: 4.0/4.0}
-\\ Relevant Coursework: Machine Learning, Data Mining, Operating Systems, Object-Oriented Design \& Analysis, Algorithms, Network Systems, Software Engineering
+\input{sections/experience}
 
-{\bf Bangalore Institute of Technology} \hfill {\em Sept 2007 - Jun 2011}
-\\ Bachelor of Engineering in Computer Science \& Engineering \hfill {\em GPA: 3.67/4.0}
+\input{sections/projects}
 
-\end{rSection}
+\input{sections/research_interests}
 
-%----------------------------------------------------------------------------------------
-%	TECHNICAL SKILLS SECTION
-%----------------------------------------------------------------------------------------
-
-\begin{rSection}{Technical Skills}
-
-\begin{tabular}{ @{} >{\bfseries}l @{\hspace{6ex}} l }
-Programming Languages & C\#, Python, C++, Java, JavaScript, R, MATLAB, Perl \\
-Frameworks \& Libraries & .NET, WPF, WCF, PRISM, AngularJS, NodeJS, Apache Spark \\
-Databases & MSSQL, MongoDB \\
-Tools \& Technologies & TFS, Git, NUnit, Direct3D, AWS, Arduino, Linux, GTK+, Qt \\
-Development Practices & Unit Testing, Design Patterns, Agile Development, TDD \\
-\end{tabular}
-
-\end{rSection}
-
-%----------------------------------------------------------------------------------------
-%	WORK EXPERIENCE SECTION
-%----------------------------------------------------------------------------------------
-
-\begin{rSection}{Experience}
-
-\begin{rSubsection}{University of Colorado Boulder}{Dec 2015 - Present}{Graduate Research Assistant}{Boulder, CO}
-\item Developed firmware for YPOD (Arduino Yun + chemical sensors) low-cost air quality monitoring system
-\item Built MongoDB backend on AWS for real-time data streaming from Arduino Yun WiFi modules
-\item Integrated YPOD data with OpenAQ real-time air quality database for global accessibility
-\item Collaborated with Prof. Michael Hannigan on environmental monitoring research
-\end{rSubsection}
-
-\begin{rSubsection}{University of Colorado Boulder}{Aug 2015 - Dec 2015}{Graduate Teaching Assistant}{Boulder, CO}
-\item Taught Data Structures in C++11 to undergraduate students under Prof. Rick Osborne
-\item Conducted lab sessions, graded assignments, and provided student mentoring
-\end{rSubsection}
-
-\begin{rSubsection}{Siemens Healthcare}{Jan 2014 - Jul 2015}{Senior Software Engineer}{Bangalore, India}
-\item Designed and developed software components for Syngo.Native medical imaging platform
-\item Built display manager for DICOM image rendering using Direct3D and WPF
-\item Prototyped data management modules for medical imaging software
-\item Performed unit testing and code reviews for critical healthcare applications
-\end{rSubsection}
-
-\begin{rSubsection}{Siemens Healthcare}{Jul 2011 - Jan 2014}{Systems Engineer}{Bangalore, India}
-\item Developed and maintained medical imaging software with focus on performance optimization
-\item Improved system performance by 5\% and reduced memory leaks by 100 MB/hr
-\item Integrated third-party software packages into Syngo.Interventional product
-\item Provided technical training on Microsoft technologies (WPF, WCF, PRISM) to team members
-\item Created comprehensive documentation for software components
-\end{rSubsection}
-
-\end{rSection}
-
-%----------------------------------------------------------------------------------------
-%	PROJECTS SECTION
-%----------------------------------------------------------------------------------------
-
-\begin{rSection}{Selected Projects}
-
-\begin{rSubsection}{Music Recommender System}{2016}{Personal Project}{}
-\item Built hybrid recommendation system combining collaborative and content-based filtering
-\item Implemented automatic genre classifier using Apache Spark for large dataset processing
-\item Utilized MLlib for machine learning model construction and evaluation
-\end{rSubsection}
-
-\begin{rSubsection}{YPOD Environmental Monitoring Platform}{2016}{Research Project}{}
-\item Developed embedded systems platform for mobile air quality monitoring at CU Boulder
-\item Created configurable design accommodating various sensors for multiple applications
-\item Implemented real-time data collection and wireless transmission capabilities
-\end{rSubsection}
-
-\begin{rSubsection}{Distributed File Server}{2015}{Academic Project}{}
-\item Built client/server application supporting file storage across multiple servers
-\item Implemented user authentication, data encryption using AES, and concurrent user support
-\item Designed fault-tolerant architecture with load balancing capabilities
-\end{rSubsection}
-
-\begin{rSubsection}{HTTP Web Server}{2015}{Academic Project}{}
-\item Implemented HTTP 1.0/1.1 web server in C++11 with multi-client support
-\item Added persistent connection support with HTTP pipelining
-\item Created configuration-based server deployment system
-\end{rSubsection}
-
-\end{rSection}
-
-%----------------------------------------------------------------------------------------
-%	RESEARCH INTERESTS
-%----------------------------------------------------------------------------------------
-
-\begin{rSection}{Research Interests}
-Machine Learning, Data Mining, Environmental Monitoring, Software Engineering, Image Processing, Distributed Systems
-\end{rSection}
-
-%----------------------------------------------------------------------------------------
-%	HONORS AND AWARDS
-%----------------------------------------------------------------------------------------
-
-\begin{rSection}{Honors \& Awards}
-
-{\bf University Fellowship} \hfill {\em Aug 2015}
-\\ University of Colorado Boulder Computer Science Department
-
-{\bf Stability Excellence Award} \hfill {\em Jan 2014}
-\\ Siemens Healthcare - For identifying critical bottlenecks in project stability
-
-{\bf Project Delivery Excellence} \hfill {\em Jan 2013}
-\\ Siemens Healthcare - Spot award for extraordinary project delivery efforts
-
-{\bf Academic Scholarship} \hfill {\em Jan 2008}
-\\ Honeywell Scholarship for 3 years at Bangalore Institute of Technology
-
-{\bf Merit Scholarship} \hfill {\em 2004}
-\\ Prerana Infosys Foundation Scholarship
-
-\end{rSection}
+\input{sections/honors_awards}
 
 \end{document}
