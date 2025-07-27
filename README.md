@@ -4,9 +4,9 @@ This repository contains LaTeX resume templates with an automated build system u
 
 ## Files
 
-- `CV/resume.tex` - Original resume format
-- `CV/resume_modern.tex` - Modern resume format with cleaner styling
-- `CV/resume.cls` - Shared LaTeX class file for both formats
+- `cv/resume.tex` - Original resume format
+- `cv/resume_modern.tex` - Modern resume format with cleaner styling
+- `cv/resume.cls` - Shared LaTeX class file for both formats
 - `Makefile` - Build automation
 - `cv-pdf/` - Generated PDF output directory (auto-created, git-ignored)
 

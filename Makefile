@@ -51,16 +51,16 @@ $(RESUME_PDF): $(RESUME_SRC).tex cv/resume.cls | $(PDF_DIR)
 
 $(MODERN_PDF): $(MODERN_SRC).tex cv/resume.cls | $(PDF_DIR)
 	@echo "Building modern resume..."
-	cd CV && pdflatex -output-directory=../$(PDF_DIR) resume_modern.tex
-	cd CV && rm -f ../$(PDF_DIR)/*.aux ../$(PDF_DIR)/*.log ../$(PDF_DIR)/*.out
+	cd cv && pdflatex -output-directory=../$(PDF_DIR) resume_modern.tex
+	cd cv && rm -f ../$(PDF_DIR)/*.aux ../$(PDF_DIR)/*.log ../$(PDF_DIR)/*.out
 	@if grep -q 'There were undefined references' $(PDF_DIR)/resume_modern.log 2>/dev/null; then \
-		cd CV && bibtex ../$(PDF_DIR)/resume_modern && pdflatex -output-directory=../$(PDF_DIR) resume_modern.tex; \
+		cd cv && bibtex ../$(PDF_DIR)/resume_modern && pdflatex -output-directory=../$(PDF_DIR) resume_modern.tex; \
 	fi
 	@if grep -q 'Rerun' $(PDF_DIR)/resume_modern.log 2>/dev/null; then \
-		cd CV && pdflatex -output-directory=../$(PDF_DIR) resume_modern.tex; \
+		cd cv && pdflatex -output-directory=../$(PDF_DIR) resume_modern.tex; \
 	fi
 	@if grep -q 'Rerun' $(PDF_DIR)/resume_modern.log 2>/dev/null; then \
-		cd CV && pdflatex -output-directory=../$(PDF_DIR) resume_modern.tex; \
+		cd cv && pdflatex -output-directory=../$(PDF_DIR) resume_modern.tex; \
 	fi
 
 # Note: .tex.pdf rule removed - using explicit rules above for better control
@@ -106,7 +106,7 @@ watch-modern:
 # Clean auxiliary files
 clean:
 	@echo "Cleaning auxiliary files..."
-	cd CV && rm -f *.aux *.bbl *.blg *.log *.toc *.dvi *.ind *.ilg *.nls *.nlo *.out
+	cd cv && rm -f *.aux *.bbl *.blg *.log *.toc *.dvi *.ind *.ilg *.nls *.nlo *.out
 
 # Remove auxiliary files from PDF directory (preserves PDFs)
 clobber: clean

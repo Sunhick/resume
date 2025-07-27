@@ -50,8 +50,8 @@
 # *.pdf
 
 # Alternatively, you can ignore specific PDF files:
-# CV/resume.pdf
-# CV/resume_modern.pdf
+# cv/resume.pdf
+# cv/resume_modern.pdf
 
 # macOS specific files
 .DS_Store
