@@ -69,6 +69,16 @@ make help
 - `pdflatex` command available in PATH
 - Optional: Ruby for watch functionality
 
+## Git Integration
+
+The project includes a comprehensive `.gitignore` file that excludes:
+- LaTeX auxiliary files (`.aux`, `.log`, `.out`, etc.)
+- macOS system files (`.DS_Store`)
+- Editor temporary files
+- Build artifacts
+
+Generated PDFs are currently tracked in git, but you can exclude them by uncommenting the `*.pdf` line in `.gitignore` if you prefer to only track source files.
+
 ## Output
 
 Generated PDFs will be saved as:
