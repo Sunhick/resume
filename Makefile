@@ -83,13 +83,13 @@ endef
 # Function to apply both page color and section filtering to LaTeX file
 # Usage: $(call apply_tex_filters,source_file,temp_file,variant)
 define apply_tex_filters
-	@echo "Applying filters to LaTeX file: $(2)"
-	@if [ -n "$(SECTIONS_TO_EXCLUDE)" ]; then \
-		sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' $(1) | \
-		sed $(call generate_section_filter_sed,$(3)) > $(2); \
-	else \
-		sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' $(1) > $(2); \
-	fi
+echo "Applying filters to LaTeX file: $(2)"; \
+if [ -n "$(SECTIONS_TO_EXCLUDE)" ]; then \
+	sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' $(1) | \
+	sed $(call generate_section_filter_sed,$(3)) > $(2); \
+else \
+	sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' $(1) > $(2); \
+fi
 endef
 
 # Default build target - build all documents
@@ -117,24 +117,25 @@ pdf: resume modern cover-letter
 # Dependencies
 $(RESUME_PDF): $(RESUME_SRC).tex cv/resume.cls | $(PDF_DIR)
 	@echo "Building resume with page color: $(PAGE_COLOR)..."
-	@sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' cv/resume.tex > cv/resume_temp.tex
+	$(call show_section_info)
+	$(call apply_tex_filters,cv/resume.tex,cv/resume_temp.tex,regular)
 	cd cv && pdflatex -output-directory=../$(PDF_DIR) resume_temp.tex
 	cd cv && mv ../$(PDF_DIR)/resume_temp.pdf ../$(PDF_DIR)/resume.pdf
 	cd cv && rm -f resume_temp.tex ../$(PDF_DIR)/*.aux ../$(PDF_DIR)/*.log ../$(PDF_DIR)/*.out
 	@if grep -q 'There were undefined references' $(PDF_DIR)/resume_temp.log 2>/dev/null; then \
-		@sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' cv/resume.tex > cv/resume_temp.tex; \
+		$(call apply_tex_filters,cv/resume.tex,cv/resume_temp.tex,regular); \
 		cd cv && bibtex ../$(PDF_DIR)/resume_temp && pdflatex -output-directory=../$(PDF_DIR) resume_temp.tex; \
 		cd cv && mv ../$(PDF_DIR)/resume_temp.pdf ../$(PDF_DIR)/resume.pdf; \
 		cd cv && rm -f resume_temp.tex; \
 	fi
 	@if grep -q 'Rerun' $(PDF_DIR)/resume_temp.log 2>/dev/null; then \
-		@sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' cv/resume.tex > cv/resume_temp.tex; \
+		$(call apply_tex_filters,cv/resume.tex,cv/resume_temp.tex,regular); \
 		cd cv && pdflatex -output-directory=../$(PDF_DIR) resume_temp.tex; \
 		cd cv && mv ../$(PDF_DIR)/resume_temp.pdf ../$(PDF_DIR)/resume.pdf; \
 		cd cv && rm -f resume_temp.tex; \
 	fi
 	@if grep -q 'Rerun' $(PDF_DIR)/resume_temp.log 2>/dev/null; then \
-		@sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' cv/resume.tex > cv/resume_temp.tex; \
+		$(call apply_tex_filters,cv/resume.tex,cv/resume_temp.tex,regular); \
 		cd cv && pdflatex -output-directory=../$(PDF_DIR) resume_temp.tex; \
 		cd cv && mv ../$(PDF_DIR)/resume_temp.pdf ../$(PDF_DIR)/resume.pdf; \
 		cd cv && rm -f resume_temp.tex; \
@@ -142,24 +143,25 @@ $(RESUME_PDF): $(RESUME_SRC).tex cv/resume.cls | $(PDF_DIR)
 
 $(MODERN_PDF): $(MODERN_SRC).tex cv/resume.cls | $(PDF_DIR)
 	@echo "Building modern resume with page color: $(PAGE_COLOR)..."
-	@sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' cv/resume_modern.tex > cv/resume_modern_temp.tex
+	$(call show_section_info)
+	$(call apply_tex_filters,cv/resume_modern.tex,cv/resume_modern_temp.tex,modern)
 	cd cv && pdflatex -output-directory=../$(PDF_DIR) resume_modern_temp.tex
 	cd cv && mv ../$(PDF_DIR)/resume_modern_temp.pdf ../$(PDF_DIR)/resume_modern.pdf
 	cd cv && rm -f resume_modern_temp.tex ../$(PDF_DIR)/*.aux ../$(PDF_DIR)/*.log ../$(PDF_DIR)/*.out
 	@if grep -q 'There were undefined references' $(PDF_DIR)/resume_modern_temp.log 2>/dev/null; then \
-		@sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' cv/resume_modern.tex > cv/resume_modern_temp.tex; \
+		$(call apply_tex_filters,cv/resume_modern.tex,cv/resume_modern_temp.tex,modern); \
 		cd cv && bibtex ../$(PDF_DIR)/resume_modern_temp && pdflatex -output-directory=../$(PDF_DIR) resume_modern_temp.tex; \
 		cd cv && mv ../$(PDF_DIR)/resume_modern_temp.pdf ../$(PDF_DIR)/resume_modern.pdf; \
 		cd cv && rm -f resume_modern_temp.tex; \
 	fi
 	@if grep -q 'Rerun' $(PDF_DIR)/resume_modern_temp.log 2>/dev/null; then \
-		@sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' cv/resume_modern.tex > cv/resume_modern_temp.tex; \
+		$(call apply_tex_filters,cv/resume_modern.tex,cv/resume_modern_temp.tex,modern); \
 		cd cv && pdflatex -output-directory=../$(PDF_DIR) resume_modern_temp.tex; \
 		cd cv && mv ../$(PDF_DIR)/resume_modern_temp.pdf ../$(PDF_DIR)/resume_modern.pdf; \
 		cd cv && rm -f resume_modern_temp.tex; \
 	fi
 	@if grep -q 'Rerun' $(PDF_DIR)/resume_modern_temp.log 2>/dev/null; then \
-		@sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' cv/resume_modern.tex > cv/resume_modern_temp.tex; \
+		$(call apply_tex_filters,cv/resume_modern.tex,cv/resume_modern_temp.tex,modern); \
 		cd cv && pdflatex -output-directory=../$(PDF_DIR) resume_modern_temp.tex; \
 		cd cv && mv ../$(PDF_DIR)/resume_modern_temp.pdf ../$(PDF_DIR)/resume_modern.pdf; \
 		cd cv && rm -f resume_modern_temp.tex; \
