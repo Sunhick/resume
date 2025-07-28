@@ -21,6 +21,47 @@ COVER_PDF = $(PDF_DIR)/coverletter.pdf
 # Page color configuration (can be overridden)
 PAGE_COLOR ?= white!95!black
 
+# Section filtering configuration
+ALL_SECTIONS := summary experience education technical_skills projects research_interests honors_awards
+INCLUDE_SECTIONS ?=
+EXCLUDE_SECTIONS ?=
+
+# Function to normalize section names (lowercase, convert commas to spaces, normalize whitespace)
+normalize_sections = $(shell echo "$(1)" | tr '[:upper:]' '[:lower:]' | tr ',' ' ' | tr -s ' ')
+
+# Function to validate section names against available sections
+validate_sections = $(filter $(ALL_SECTIONS),$(call normalize_sections,$(1)))
+
+# Function to get invalid section names
+invalid_sections = $(filter-out $(ALL_SECTIONS),$(call normalize_sections,$(1)))
+
+# Determine which sections to include based on parameters
+ifdef INCLUDE_SECTIONS
+    FILTERED_SECTIONS := $(call validate_sections,$(INCLUDE_SECTIONS))
+    INVALID_INCLUDE := $(call invalid_sections,$(INCLUDE_SECTIONS))
+else ifdef EXCLUDE_SECTIONS
+    EXCLUDED_SECTIONS := $(call validate_sections,$(EXCLUDE_SECTIONS))
+    INVALID_EXCLUDE := $(call invalid_sections,$(EXCLUDE_SECTIONS))
+    FILTERED_SECTIONS := $(filter-out $(EXCLUDED_SECTIONS),$(ALL_SECTIONS))
+else
+    FILTERED_SECTIONS := $(ALL_SECTIONS)
+endif
+
+# Generate sections to exclude for sed processing
+SECTIONS_TO_EXCLUDE := $(filter-out $(FILTERED_SECTIONS),$(ALL_SECTIONS))
+
+# Function to display section filtering information
+define show_section_info
+	@echo "Section filtering information:"
+	@echo "  Available sections: $(ALL_SECTIONS)"
+	@echo "  Including sections: $(FILTERED_SECTIONS)"
+	@if [ -n "$(SECTIONS_TO_EXCLUDE)" ]; then echo "  Excluding sections: $(SECTIONS_TO_EXCLUDE)"; fi
+	@if [ -n "$(INVALID_INCLUDE)" ]; then echo "  Warning: Invalid sections in INCLUDE_SECTIONS ignored: $(INVALID_INCLUDE)"; fi
+	@if [ -n "$(INVALID_EXCLUDE)" ]; then echo "  Warning: Invalid sections in EXCLUDE_SECTIONS ignored: $(INVALID_EXCLUDE)"; fi
+	@if [ -n "$(INCLUDE_SECTIONS)" ] && [ -n "$(EXCLUDE_SECTIONS)" ]; then echo "  Info: Using INCLUDE_SECTIONS, ignoring EXCLUDE_SECTIONS"; fi
+	@echo ""
+endef
+
 # Default build target - build all documents
 default: resume modern cover-letter
 
@@ -196,3 +237,4 @@ help:
 	@echo "  make resume PAGE_COLOR=gray!10                 # Light gray background"
 	@echo ""
 	@echo "PDFs are generated in: $(PDF_DIR)/"
+
