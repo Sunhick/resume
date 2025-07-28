@@ -62,6 +62,36 @@ define show_section_info
 	@echo ""
 endef
 
+# Function to generate sed command for commenting out excluded sections
+# Usage: $(call generate_section_filter_sed,variant)
+# where variant is either "regular" or "modern"
+define generate_section_filter_sed
+$(foreach section,$(SECTIONS_TO_EXCLUDE),-e 's|^\\input{sections/$(1)/$(section)}|%\\input{sections/$(1)/$(section)}|g')
+endef
+
+# Function to create temporary LaTeX file with section filtering applied
+# Usage: $(call create_filtered_tex,source_file,temp_file,variant)
+define create_filtered_tex
+	@echo "Creating filtered LaTeX file: $(2)"
+	@if [ -n "$(SECTIONS_TO_EXCLUDE)" ]; then \
+		sed $(call generate_section_filter_sed,$(3)) $(1) > $(2); \
+	else \
+		cp $(1) $(2); \
+	fi
+endef
+
+# Function to apply both page color and section filtering to LaTeX file
+# Usage: $(call apply_tex_filters,source_file,temp_file,variant)
+define apply_tex_filters
+	@echo "Applying filters to LaTeX file: $(2)"
+	@if [ -n "$(SECTIONS_TO_EXCLUDE)" ]; then \
+		sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' $(1) | \
+		sed $(call generate_section_filter_sed,$(3)) > $(2); \
+	else \
+		sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' $(1) > $(2); \
+	fi
+endef
+
 # Default build target - build all documents
 default: resume modern cover-letter
 
@@ -208,6 +238,7 @@ clean-pdfs:
 	else \
 		echo "$(PDF_DIR)/ directory does not exist"; \
 	fi
+
 
 # Help target
 help:
