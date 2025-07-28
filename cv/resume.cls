@@ -58,11 +58,16 @@
 \renewcommand{\maketitle}{
   \printname
   \@ifundefined{@addressone}{}{
-    \begin{center}
-    \begin{tabular}{c@{\hskip 2in}c}
-    \@addressone & \@addresstwo
-    \end{tabular}
-    \end{center}
+    \noindent\hspace{0.75em}
+    \begin{minipage}[t]{0.45\textwidth}
+    \raggedright
+    \@addressone
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.45\textwidth}
+    \raggedleft
+    \@addresstwo
+    \end{minipage}
     \bigskip
   }
 }
