@@ -5,6 +5,7 @@
 \usepackage{amssymb}
 \usepackage{url}
 \usepackage{hyperref}
+\usepackage{fontawesome5}
 \hypersetup{
     colorlinks=false,
     pdfborder={0 0 0},
@@ -12,22 +13,24 @@
 
 \name{Sunil Murthy}
 \address{
-         Email: \href{mailto:sunhick@gmail.com}{sunhick@gmail.com}\\
-         Website: \href{https://sunhick.github.io/}{sunhick.github.io}\\
+         \faEnvelope\ \href{mailto:sunhick@gmail.com}{sunhick@gmail.com}\\
+         \faGlobe\ \href{https://sunhick.github.io/}{sunhick.github.io}\\
         }{
-	LinkedIn: \href{https://linkedin.com/in/sunhick}{linkedin.com/in/sunhick}\\
-	GitHub: \href{https://github.com/sunhick}{github.com/sunhick}\\
+	\faLinkedin\ \href{https://linkedin.com/in/sunhick}{sunhick}\\
+	\faGithub\ \href{https://github.com/sunhick}{sunhick}\\
 	}
 
 \begin{document}
 
 \maketitle
 
+\input{sections/modern/summary}
+
+\input{sections/modern/experience}
+
 \input{sections/modern/education}
 
 \input{sections/modern/technical_skills}
-
-\input{sections/modern/experience}
 
 \input{sections/modern/projects}
 
