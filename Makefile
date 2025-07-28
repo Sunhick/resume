@@ -216,13 +216,19 @@ watch-modern:
 	      -e " sleep 0.25" \
 	      -e "end"
 
-# Clean auxiliary files
+# Clean auxiliary files and PDFs
 clean:
-	@echo "Cleaning auxiliary files..."
+	@echo "Cleaning auxiliary files and PDFs..."
 	cd cv && rm -f *.aux *.bbl *.blg *.log *.toc *.dvi *.ind *.ilg *.nls *.nlo *.out
+	@if [ -d "$(PDF_DIR)" ]; then \
+		rm -f $(PDF_DIR)/*.pdf $(PDF_DIR)/*.aux $(PDF_DIR)/*.log $(PDF_DIR)/*.out $(PDF_DIR)/*.bbl $(PDF_DIR)/*.blg; \
+		echo "Cleaned PDFs and auxiliary files from $(PDF_DIR)/"; \
+	fi
 
 # Remove auxiliary files from PDF directory (preserves PDFs)
-clobber: clean
+clobber:
+	@echo "Cleaning auxiliary files..."
+	cd cv && rm -f *.aux *.bbl *.blg *.log *.toc *.dvi *.ind *.ilg *.nls *.nlo *.out
 	@echo "Cleaning auxiliary files from $(PDF_DIR)/..."
 	@if [ -d "$(PDF_DIR)" ]; then \
 		rm -f $(PDF_DIR)/*.aux $(PDF_DIR)/*.log $(PDF_DIR)/*.out $(PDF_DIR)/*.bbl $(PDF_DIR)/*.blg; \
@@ -255,7 +261,7 @@ help:
 	@echo "  open-cover  - Open cover letter PDF"
 	@echo "  watch-resume- Watch and rebuild original resume"
 	@echo "  watch-modern- Watch and rebuild modern resume"
-	@echo "  clean       - Remove auxiliary files"
+	@echo "  clean       - Remove auxiliary files and PDFs"
 	@echo "  clobber     - Remove auxiliary files from $(PDF_DIR)/ (preserves PDFs)"
 	@echo "  clean-pdfs  - Remove PDF files from $(PDF_DIR)/ (use with caution)"
 	@echo "  help        - Show this help message"
