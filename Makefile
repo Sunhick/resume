@@ -3,7 +3,7 @@
 
 .SUFFIXES: .tex .pdf
 
-.PHONY: default pdf modern resume open-resume open-modern clean clobber clean-pdfs help
+.PHONY: default pdf modern resume cover-letter open-resume open-modern open-cover clean clobber clean-pdfs help
 
 # Output directory for PDFs
 PDF_DIR = cv-pdf
@@ -11,16 +11,18 @@ PDF_DIR = cv-pdf
 # Source files
 RESUME_SRC = cv/resume
 MODERN_SRC = cv/resume_modern
+COVER_SRC = cover-letter/coverletter
 
 # Output PDF files
 RESUME_PDF = $(PDF_DIR)/resume.pdf
 MODERN_PDF = $(PDF_DIR)/resume_modern.pdf
+COVER_PDF = $(PDF_DIR)/coverletter.pdf
 
 # Page color configuration (can be overridden)
 PAGE_COLOR ?= white!95!black
 
-# Default build target
-default: resume
+# Default build target - build all documents
+default: resume modern cover-letter
 
 # Create output directory
 $(PDF_DIR):
@@ -34,8 +36,12 @@ resume: $(RESUME_PDF)
 modern: $(MODERN_PDF)
 	@echo "Modern resume built successfully! Check $(MODERN_PDF)"
 
-# Build both resumes
-pdf: resume modern
+# Build cover letter
+cover-letter: $(COVER_PDF)
+	@echo "Cover letter built successfully! Check $(COVER_PDF)"
+
+# Build all documents
+pdf: resume modern cover-letter
 
 # Dependencies
 $(RESUME_PDF): $(RESUME_SRC).tex cv/resume.cls | $(PDF_DIR)
@@ -88,6 +94,11 @@ $(MODERN_PDF): $(MODERN_SRC).tex cv/resume.cls | $(PDF_DIR)
 		cd cv && rm -f resume_modern_temp.tex; \
 	fi
 
+$(COVER_PDF): $(COVER_SRC).tex cover-letter/coverletter.cls | $(PDF_DIR)
+	@echo "Building cover letter..."
+	cd cover-letter && pdflatex -output-directory=../$(PDF_DIR) coverletter.tex
+	cd cover-letter && rm -f ../$(PDF_DIR)/*.aux ../$(PDF_DIR)/*.log ../$(PDF_DIR)/*.out
+
 # Note: .tex.pdf rule removed - using explicit rules above for better control
 
 # Open PDFs with default viewer (macOS)
@@ -98,6 +109,10 @@ open-resume: $(RESUME_PDF)
 open-modern: $(MODERN_PDF)
 	@echo "Opening $(MODERN_PDF)..."
 	@command -v open >/dev/null 2>&1 && open $(MODERN_PDF) || echo "open command not available"
+
+open-cover: $(COVER_PDF)
+	@echo "Opening $(COVER_PDF)..."
+	@command -v open >/dev/null 2>&1 && open $(COVER_PDF) || echo "open command not available"
 
 # Legacy xpdf support
 xpdf: resume
@@ -156,11 +171,14 @@ clean-pdfs:
 # Help target
 help:
 	@echo "Available targets:"
-	@echo "  resume      - Build original resume (default)"
+	@echo "  default     - Build all documents (resume, modern, cover letter)"
+	@echo "  resume      - Build original resume"
 	@echo "  modern      - Build modern resume"
-	@echo "  pdf         - Build both resumes"
+	@echo "  cover-letter- Build cover letter"
+	@echo "  pdf         - Build all documents"
 	@echo "  open-resume - Open original resume PDF"
 	@echo "  open-modern - Open modern resume PDF"
+	@echo "  open-cover  - Open cover letter PDF"
 	@echo "  watch-resume- Watch and rebuild original resume"
 	@echo "  watch-modern- Watch and rebuild modern resume"
 	@echo "  clean       - Remove auxiliary files"
