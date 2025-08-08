@@ -20,6 +20,7 @@ COVER_PDF = $(PDF_DIR)/coverletter.pdf
 
 # Page color configuration (can be overridden)
 PAGE_COLOR ?= white!95!black
+TEXT_COLOR ?= black
 
 # Section filtering configuration
 ALL_SECTIONS := summary experience education technical_skills projects research_interests honors_awards
@@ -86,9 +87,11 @@ define apply_tex_filters
 echo "Applying filters to LaTeX file: $(2)"; \
 if [ -n "$(SECTIONS_TO_EXCLUDE)" ]; then \
 	sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' $(1) | \
+	sed 's/TEXTCOLOR_PLACEHOLDER/$(TEXT_COLOR)/g' | \
 	sed $(call generate_section_filter_sed,$(3)) > $(2); \
 else \
-	sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' $(1) > $(2); \
+	sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' $(1) | \
+	sed 's/TEXTCOLOR_PLACEHOLDER/$(TEXT_COLOR)/g' > $(2); \
 fi
 endef
 
@@ -113,6 +116,36 @@ cover-letter: $(COVER_PDF)
 
 # Build all documents
 pdf: resume modern cover-letter
+
+# Dark theme recipes
+dark-resume:
+	@echo "Building resume with dark theme (black background, white text)..."
+	$(MAKE) resume PAGE_COLOR=black TEXT_COLOR=white
+
+dark-modern:
+	@echo "Building modern resume with dark theme (black background, white text)..."
+	$(MAKE) modern PAGE_COLOR=black TEXT_COLOR=white
+
+dark-all:
+	@echo "Building all documents with dark theme (black background, white text)..."
+	$(MAKE) resume PAGE_COLOR=black TEXT_COLOR=white
+	$(MAKE) modern PAGE_COLOR=black TEXT_COLOR=white
+	$(MAKE) cover-letter PAGE_COLOR=black TEXT_COLOR=white
+
+# Cream theme recipes
+cream-resume:
+	@echo "Building resume with cream theme (warm off-white background, dark text)..."
+	$(MAKE) resume PAGE_COLOR='white!95!yellow!5!red' TEXT_COLOR='black!80'
+
+cream-modern:
+	@echo "Building modern resume with cream theme (warm off-white background, dark text)..."
+	$(MAKE) modern PAGE_COLOR='white!95!yellow!5!red' TEXT_COLOR='black!80'
+
+cream-all:
+	@echo "Building all documents with cream theme (warm off-white background, dark text)..."
+	$(MAKE) resume PAGE_COLOR='white!95!yellow!5!red' TEXT_COLOR='black!80'
+	$(MAKE) modern PAGE_COLOR='white!95!yellow!5!red' TEXT_COLOR='black!80'
+	$(MAKE) cover-letter PAGE_COLOR='white!95!yellow!5!red' TEXT_COLOR='black!80'
 
 # Dependencies
 $(RESUME_PDF): $(RESUME_SRC).tex cv/resume.cls | $(PDF_DIR)
@@ -168,9 +201,13 @@ $(MODERN_PDF): $(MODERN_SRC).tex cv/resume.cls | $(PDF_DIR)
 	fi
 
 $(COVER_PDF): $(COVER_SRC).tex cover-letter/coverletter.cls | $(PDF_DIR)
-	@echo "Building cover letter..."
-	cd cover-letter && pdflatex -output-directory=../$(PDF_DIR) coverletter.tex
-	cd cover-letter && rm -f ../$(PDF_DIR)/*.aux ../$(PDF_DIR)/*.log ../$(PDF_DIR)/*.out
+	@echo "Building cover letter with page color: $(PAGE_COLOR)..."
+	@echo "Applying filters to LaTeX file: cover-letter/coverletter_temp.tex"
+	@sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' cover-letter/coverletter.tex | \
+	sed 's/TEXTCOLOR_PLACEHOLDER/$(TEXT_COLOR)/g' > cover-letter/coverletter_temp.tex
+	cd cover-letter && pdflatex -output-directory=../$(PDF_DIR) coverletter_temp.tex
+	cd cover-letter && mv ../$(PDF_DIR)/coverletter_temp.pdf ../$(PDF_DIR)/coverletter.pdf
+	cd cover-letter && rm -f coverletter_temp.tex ../$(PDF_DIR)/*.aux ../$(PDF_DIR)/*.log ../$(PDF_DIR)/*.out
 
 # Note: .tex.pdf rule removed - using explicit rules above for better control
 
@@ -256,6 +293,12 @@ help:
 	@echo "  modern      - Build modern resume"
 	@echo "  cover-letter- Build cover letter"
 	@echo "  pdf         - Build all documents"
+	@echo "  dark-resume - Build original resume with dark theme"
+	@echo "  dark-modern - Build modern resume with dark theme"
+	@echo "  dark-all    - Build all documents with dark theme"
+	@echo "  cream-resume- Build original resume with cream theme"
+	@echo "  cream-modern- Build modern resume with cream theme"
+	@echo "  cream-all   - Build all documents with cream theme"
 	@echo "  open-resume - Open original resume PDF"
 	@echo "  open-modern - Open modern resume PDF"
 	@echo "  open-cover  - Open cover letter PDF"
@@ -268,12 +311,14 @@ help:
 	@echo ""
 	@echo "Configuration:"
 	@echo "  PAGE_COLOR  - Set page background color (default: $(PAGE_COLOR))"
+	@echo "  TEXT_COLOR  - Set text color (default: $(TEXT_COLOR))"
 	@echo ""
 	@echo "Examples:"
 	@echo "  make resume PAGE_COLOR=white                    # Pure white background"
 	@echo "  make pdf PAGE_COLOR='white!98!black'           # Very light off-white (quoted)"
 	@echo "  make modern PAGE_COLOR='white!90!yellow'       # Cream background (quoted)"
 	@echo "  make resume PAGE_COLOR=gray!10                 # Light gray background"
+	@echo "  make resume PAGE_COLOR=black TEXT_COLOR=white  # Black background, white text"
 	@echo ""
 	@echo "PDFs are generated in: $(PDF_DIR)/"
 
