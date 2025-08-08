@@ -7,6 +7,9 @@
 
 # Output directory for PDFs
 PDF_DIR = cv-pdf
+REGULAR_DIR = $(PDF_DIR)/regular
+CREAM_DIR = $(PDF_DIR)/cream
+DARK_DIR = $(PDF_DIR)/dark
 
 # Source files
 RESUME_SRC = cv/resume
@@ -95,12 +98,21 @@ else \
 fi
 endef
 
-# Default build target - build all documents
-default: resume modern cover-letter
+# Default build target - build all themes
+default: all-themes
 
-# Create output directory
+# Create output directories
 $(PDF_DIR):
 	@mkdir -p $(PDF_DIR)
+
+$(REGULAR_DIR): | $(PDF_DIR)
+	@mkdir -p $(REGULAR_DIR)
+
+$(CREAM_DIR): | $(PDF_DIR)
+	@mkdir -p $(CREAM_DIR)
+
+$(DARK_DIR): | $(PDF_DIR)
+	@mkdir -p $(DARK_DIR)
 
 # Build original resume
 resume: $(RESUME_PDF)
@@ -135,17 +147,64 @@ dark-all:
 # Cream theme recipes
 cream-resume:
 	@echo "Building resume with cream theme (warm off-white background, dark text)..."
-	$(MAKE) resume PAGE_COLOR='white!95!yellow!5!red' TEXT_COLOR='black!80'
+	$(MAKE) resume PAGE_COLOR='white!97!yellow' TEXT_COLOR='black!80'
 
 cream-modern:
 	@echo "Building modern resume with cream theme (warm off-white background, dark text)..."
-	$(MAKE) modern PAGE_COLOR='white!95!yellow!5!red' TEXT_COLOR='black!80'
+	$(MAKE) modern PAGE_COLOR='white!97!yellow' TEXT_COLOR='black!80'
 
 cream-all:
 	@echo "Building all documents with cream theme (warm off-white background, dark text)..."
-	$(MAKE) resume PAGE_COLOR='white!95!yellow!5!red' TEXT_COLOR='black!80'
-	$(MAKE) modern PAGE_COLOR='white!95!yellow!5!red' TEXT_COLOR='black!80'
-	$(MAKE) cover-letter PAGE_COLOR='white!95!yellow!5!red' TEXT_COLOR='black!80'
+	$(MAKE) resume PAGE_COLOR='white!97!yellow' TEXT_COLOR='black!80'
+	$(MAKE) modern PAGE_COLOR='white!97!yellow' TEXT_COLOR='black!80'
+	$(MAKE) cover-letter PAGE_COLOR='white!97!yellow' TEXT_COLOR='black!80'
+
+# Build all themes in organized folders
+all-themes: | $(REGULAR_DIR) $(CREAM_DIR) $(DARK_DIR)
+	@echo "Building all documents in all themes..."
+	@echo "=== Building Regular Theme ==="
+	$(MAKE) build-theme-set THEME_DIR=$(REGULAR_DIR) THEME_PAGE_COLOR='white!95!black' THEME_TEXT_COLOR=black THEME_NAME=regular
+	@echo "=== Building Cream Theme ==="
+	$(MAKE) build-theme-set THEME_DIR=$(CREAM_DIR) THEME_PAGE_COLOR='white!97!yellow' THEME_TEXT_COLOR='black!80' THEME_NAME=cream
+	@echo "=== Building Dark Theme ==="
+	$(MAKE) build-theme-set THEME_DIR=$(DARK_DIR) THEME_PAGE_COLOR=black THEME_TEXT_COLOR=white THEME_NAME=dark
+	@echo ""
+	@echo "All themes built successfully!"
+	@echo "Regular theme: $(REGULAR_DIR)/"
+	@echo "Cream theme:   $(CREAM_DIR)/"
+	@echo "Dark theme:    $(DARK_DIR)/"
+
+# Helper target to build a complete theme set
+build-theme-set:
+	@echo "Building $(THEME_NAME) theme in $(THEME_DIR)/"
+	@$(MAKE) build-resume-to-dir PDF_TARGET_DIR=$(THEME_DIR) PAGE_COLOR=$(THEME_PAGE_COLOR) TEXT_COLOR=$(THEME_TEXT_COLOR)
+	@$(MAKE) build-modern-to-dir PDF_TARGET_DIR=$(THEME_DIR) PAGE_COLOR=$(THEME_PAGE_COLOR) TEXT_COLOR=$(THEME_TEXT_COLOR)
+	@$(MAKE) build-cover-to-dir PDF_TARGET_DIR=$(THEME_DIR) PAGE_COLOR=$(THEME_PAGE_COLOR) TEXT_COLOR=$(THEME_TEXT_COLOR)
+
+# Build individual documents to specific directories
+build-resume-to-dir:
+	@echo "Building resume to $(PDF_TARGET_DIR)/"
+	$(call show_section_info)
+	$(call apply_tex_filters,cv/resume.tex,cv/resume_temp.tex,regular)
+	cd cv && pdflatex -output-directory=../$(PDF_TARGET_DIR) resume_temp.tex
+	cd cv && mv ../$(PDF_TARGET_DIR)/resume_temp.pdf ../$(PDF_TARGET_DIR)/resume.pdf
+	cd cv && rm -f resume_temp.tex ../$(PDF_TARGET_DIR)/*.aux ../$(PDF_TARGET_DIR)/*.log ../$(PDF_TARGET_DIR)/*.out
+
+build-modern-to-dir:
+	@echo "Building modern resume to $(PDF_TARGET_DIR)/"
+	$(call show_section_info)
+	$(call apply_tex_filters,cv/resume_modern.tex,cv/resume_modern_temp.tex,modern)
+	cd cv && pdflatex -output-directory=../$(PDF_TARGET_DIR) resume_modern_temp.tex
+	cd cv && mv ../$(PDF_TARGET_DIR)/resume_modern_temp.pdf ../$(PDF_TARGET_DIR)/resume_modern.pdf
+	cd cv && rm -f resume_modern_temp.tex ../$(PDF_TARGET_DIR)/*.aux ../$(PDF_TARGET_DIR)/*.log ../$(PDF_TARGET_DIR)/*.out
+
+build-cover-to-dir:
+	@echo "Building cover letter to $(PDF_TARGET_DIR)/"
+	@sed 's/PAGECOLOR_PLACEHOLDER/$(PAGE_COLOR)/g' cover-letter/coverletter.tex | \
+	sed 's/TEXTCOLOR_PLACEHOLDER/$(TEXT_COLOR)/g' > cover-letter/coverletter_temp.tex
+	cd cover-letter && pdflatex -output-directory=../$(PDF_TARGET_DIR) coverletter_temp.tex
+	cd cover-letter && mv ../$(PDF_TARGET_DIR)/coverletter_temp.pdf ../$(PDF_TARGET_DIR)/coverletter.pdf
+	cd cover-letter && rm -f coverletter_temp.tex ../$(PDF_TARGET_DIR)/*.aux ../$(PDF_TARGET_DIR)/*.log ../$(PDF_TARGET_DIR)/*.out
 
 # Dependencies
 $(RESUME_PDF): $(RESUME_SRC).tex cv/resume.cls | $(PDF_DIR)
@@ -259,7 +318,8 @@ clean:
 	cd cv && rm -f *.aux *.bbl *.blg *.log *.toc *.dvi *.ind *.ilg *.nls *.nlo *.out
 	@if [ -d "$(PDF_DIR)" ]; then \
 		rm -f $(PDF_DIR)/*.pdf $(PDF_DIR)/*.aux $(PDF_DIR)/*.log $(PDF_DIR)/*.out $(PDF_DIR)/*.bbl $(PDF_DIR)/*.blg; \
-		echo "Cleaned PDFs and auxiliary files from $(PDF_DIR)/"; \
+		rm -rf $(REGULAR_DIR) $(CREAM_DIR) $(DARK_DIR); \
+		echo "Cleaned PDFs and auxiliary files from $(PDF_DIR)/ and all theme directories"; \
 	fi
 
 # Remove auxiliary files from PDF directory (preserves PDFs)
@@ -269,7 +329,10 @@ clobber:
 	@echo "Cleaning auxiliary files from $(PDF_DIR)/..."
 	@if [ -d "$(PDF_DIR)" ]; then \
 		rm -f $(PDF_DIR)/*.aux $(PDF_DIR)/*.log $(PDF_DIR)/*.out $(PDF_DIR)/*.bbl $(PDF_DIR)/*.blg; \
-		echo "Cleaned auxiliary files from $(PDF_DIR)/ (PDFs preserved)"; \
+		if [ -d "$(REGULAR_DIR)" ]; then rm -f $(REGULAR_DIR)/*.aux $(REGULAR_DIR)/*.log $(REGULAR_DIR)/*.out $(REGULAR_DIR)/*.bbl $(REGULAR_DIR)/*.blg; fi; \
+		if [ -d "$(CREAM_DIR)" ]; then rm -f $(CREAM_DIR)/*.aux $(CREAM_DIR)/*.log $(CREAM_DIR)/*.out $(CREAM_DIR)/*.bbl $(CREAM_DIR)/*.blg; fi; \
+		if [ -d "$(DARK_DIR)" ]; then rm -f $(DARK_DIR)/*.aux $(DARK_DIR)/*.log $(DARK_DIR)/*.out $(DARK_DIR)/*.bbl $(DARK_DIR)/*.blg; fi; \
+		echo "Cleaned auxiliary files from $(PDF_DIR)/ and theme directories (PDFs preserved)"; \
 	else \
 		echo "$(PDF_DIR)/ directory does not exist"; \
 	fi
@@ -279,7 +342,10 @@ clean-pdfs:
 	@echo "Removing PDF files from $(PDF_DIR)/..."
 	@if [ -d "$(PDF_DIR)" ]; then \
 		rm -f $(PDF_DIR)/*.pdf; \
-		echo "Removed PDF files from $(PDF_DIR)/"; \
+		if [ -d "$(REGULAR_DIR)" ]; then rm -f $(REGULAR_DIR)/*.pdf; fi; \
+		if [ -d "$(CREAM_DIR)" ]; then rm -f $(CREAM_DIR)/*.pdf; fi; \
+		if [ -d "$(DARK_DIR)" ]; then rm -f $(DARK_DIR)/*.pdf; fi; \
+		echo "Removed PDF files from $(PDF_DIR)/ and all theme directories"; \
 	else \
 		echo "$(PDF_DIR)/ directory does not exist"; \
 	fi
@@ -299,6 +365,7 @@ help:
 	@echo "  cream-resume- Build original resume with cream theme"
 	@echo "  cream-modern- Build modern resume with cream theme"
 	@echo "  cream-all   - Build all documents with cream theme"
+	@echo "  all-themes  - Build all documents in all themes (organized in folders)"
 	@echo "  open-resume - Open original resume PDF"
 	@echo "  open-modern - Open modern resume PDF"
 	@echo "  open-cover  - Open cover letter PDF"
